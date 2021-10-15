@@ -1,0 +1,4 @@
+policy_name;cir;units;cir_xe;units_xe;devices
+# Reconciliar
+#40Mbps;40;mbps;4000;bps;['xr0','xr1','xr2','c0','c1','c2']
+100Mbps;100;mbps;;;['XRv-1']

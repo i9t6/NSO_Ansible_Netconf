@@ -1,0 +1,2 @@
+[nso-entel]
+172.16.1.122 ansible_user="admin" ansible_password="admin" ansible_ssh_password="admin" url="http://172.16.1.125:8080/jsonrpc"

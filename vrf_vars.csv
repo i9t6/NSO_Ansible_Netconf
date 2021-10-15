@@ -1,0 +1,12 @@
+vrf_name,device,rt_primary,rt_export,rt_import,tipo,rm_export,rm_import
+fundempresanal,XRv-1,500:600,,,,,
+vrf_01,XRv-1,500:601,,,,,
+vrf_01,xr0,500:601,,,,,
+vrf_01,xr1,500:601,,,,,
+vrf_01,c1,500:601,,,,,
+vrf_01,c0,500:601,,,,,
+vrf_02,XRv-1,500:602,,,,,
+vrf_02,c0,500:602,,,,,
+vrf_02,c1,500:602,,,,,
+vrf_02,xr0,500:602,,,,,
+vrf_02,xr1,500:602,,,,,

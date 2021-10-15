@@ -1,0 +1,16 @@
+---
+- name: Configurar XRv
+  hosts: xr-1
+  connection: local
+  gather_facts: no
+  no_log: true
+  
+
+  tasks:
+    - name: Configuración de vrf, bgp,  policy-map y l3vpn
+      iosxr_config:
+        src: "{{ item.file }}"
+      loop:
+        - file: XRv-1-config.cfg
+  
+- import_playbook: xr_sync_from.yml

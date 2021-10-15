@@ -1,0 +1,4 @@
+---
+- import_playbook: ptu_config_csv.yml
+- import_playbook: vrf_config_csv.yml
+- import_playbook: l3vpn_client_config_csv.yml

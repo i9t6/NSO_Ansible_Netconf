@@ -1,0 +1,86 @@
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+ 
+  tasks:
+  - name: Service variables in CSV file
+    read_csv:
+      path: vrf_vars_reconcile.csv
+      #key: vrf_name
+    register: vrf
+    delegate_to: localhost
+
+  - name: VRF Configuration
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      commit_flags: [no-networking]
+      data:
+        tailf-ncs:services:
+          vrf:vrf:
+            - name: "{{ item.vrf_name }}"
+              devices:
+              - device: "{{ item.device }}"
+                primary_route_target: "{{ item.rt_primary }}"
+                RT_export:
+                - "{{ item.rt_import }}"
+                RT_import:
+                - "{{ item.rt_export }}"
+    loop: "{{ vrf.list }}"
+    loop_control:
+      label: "{{ item.vrf_name }}" 
+
+  # - name: print
+  #   debug:
+  #     msg: "{{ item.device }}"
+  #   loop: "{{ vrf.list }}"
+
+  - name: Reconcile
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:services/vrf:vrf{ {{item.vrf_name}} }/re-deploy
+      input: { "reconcile" : { } }
+    loop: "{{ vrf.list }}"
+    loop_control:
+      label: "{{ item.vrf_name }}"   
+
+  - name: Compare-Config
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{ {{item.device}} }/compare-config
+    loop: "{{ vrf.list }}"
+    loop_control:
+      label: "{{ item.device }}"  
+    register: compareconfig
+
+  - name: Compare-Config Results
+    debug:
+      msg: "Output: {{ item.output }}"
+    loop: "{{ compareconfig.results }}"
+    loop_control:
+      label: "{{ item.item.device }}"  
+
+  - name: Check-Sync
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{ {{item.device}} }/check-sync
+    loop: "{{ vrf.list }}"
+    loop_control:
+      label: "{{ item.device }}"
+    register: checksync
+
+  - name: Check-Sync Results
+    debug:
+      msg: "Sync-Status: {{ item.output.result }}"
+    loop: "{{ checksync.results }}"
+    loop_control:
+      label: "{{ item.item.device }}"

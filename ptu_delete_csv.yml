@@ -1,0 +1,33 @@
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+ 
+  tasks:
+  - name: Service variables in CSV file
+    read_csv:
+      path: ptu_vars.csv
+      #key: vrf_name
+    register: ptu
+    delegate_to: localhost
+
+  - name: Delete - Port-Turn-Up Configuration
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          port-turnup:port-turnup:
+            - device: "{{ item.device }}"
+              interface_type: "{{ item.interface_type }}"
+              interface_number: "{{ item.interface_number }}"
+              __state: absent 
+    loop: "{{ ptu.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+  # - name: print
+  #   debug:
+  #     msg: "{{ item.router }}"
+  #   loop: "{{ vrf.list }}"

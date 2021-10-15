@@ -1,0 +1,28 @@
+---
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+
+  tasks:
+  - name: Sync-from
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{XRv-1}/sync-from
+
+  - name: Compare-Config
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{ XRv-1 }/compare-config
+
+  - name: Check-Sync
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{ XRv-1 }/check-sync

@@ -1,0 +1,46 @@
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+ 
+  tasks:
+  - name: Service variables in CSV file
+    read_csv:
+      path: l3vpn_client_vars.csv
+    register: l3vpn
+    delegate_to: localhost
+
+  - name: Delete L3 VPN, XE
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          l3vpn:l3vpn_client:
+          - client: "{{ item.client }}"
+            client_id: "{{ item.client_id }}"
+            site: "{{ item.site }}"
+            __state: absent 
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+    when: " item.tipo == 'iosxe'"
+
+  - name: Delete L3 VPN, XR
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          l3vpn:l3vpn_client:
+          - client: "{{ item.client }}"
+            client_id: "{{ item.client_id }}"
+            site: "{{ item.site }}"
+            __state: absent 
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+    when: " item.tipo == 'iosxr'"

@@ -1,0 +1,31 @@
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+ 
+  tasks:
+  - name: Service variables in CSV file
+    read_csv:
+      path: vrf_vars.csv
+      #key: vrf_name
+    register: vrf
+    delegate_to: localhost
+
+  - name: VRF Configuration
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          vrf:vrf:
+            - name: "{{ item.vrf_name }}"
+              __state: absent 
+    loop: "{{ vrf.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+  # - name: print
+  #   debug:
+  #     msg: "{{ item.device }}"
+  #   loop: "{{ vrf.list }}"

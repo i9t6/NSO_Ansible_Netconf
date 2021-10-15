@@ -1,0 +1,115 @@
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+
+
+
+  tasks:
+  - name: Service variables in CSV file
+    read_csv:
+      path: ptu_vars_reconcile.csv
+      #key: vrf_name
+    register: ptu
+    delegate_to: localhost
+
+  - name: Port-Turn-Up Reconcile, basic
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      commit_flags: [no-networking]
+      data:
+        tailf-ncs:services:
+          port-turnup:port-turnup:
+            - device: "{{ item.device }}"
+              interface_type: "{{ item.interface_type }}"
+              interface_number: "{{ item.interface_number }}"
+    loop: "{{ ptu.list }}"
+    loop_control:
+      label: "{{ item.device }}"    
+
+  - name: Port-Turn-Up Reconcile, mtu
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      commit_flags: [no-networking]
+      data:
+        tailf-ncs:services:
+          port-turnup:port-turnup:
+            - device: "{{ item.device }}"
+              interface_type: "{{ item.interface_type }}"
+              interface_number: "{{ item.interface_number }}"
+              mtu: "{{ item.mtu }}"
+    loop: "{{ ptu.list }}"
+    loop_control:
+      label: "{{ item.device }}"    
+    when: item.mtu
+
+  - name: Port-Turn-Up Reconcile, description
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      commit_flags: [no-networking]
+      data:
+        tailf-ncs:services:
+          port-turnup:port-turnup:
+            - device: "{{ item.device }}"
+              interface_type: "{{ item.interface_type }}"
+              interface_number: "{{ item.interface_number }}"
+              description: "{{ item.description }}"
+    loop: "{{ ptu.list }}"
+    loop_control:
+      label: "{{ item.device }}"     
+    when: item.description
+
+  - name: Reconcile
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:services/port-turnup:port-turnup{ {{item.device}} {{item.interface_type}} {{item.interface_number}} }/re-deploy
+      input: { "reconcile" : { } }
+    loop: "{{ ptu.list }}"
+    loop_control:
+      label: "{{ item.device }}" 
+
+  - name: Compare-Config
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{ {{item.device}} }/compare-config
+    loop: "{{ ptu.list }}"
+    loop_control:
+      label: "{{ item.device }}"  
+    register: compareconfig
+
+  - name: Compare-Config Results
+    debug:
+      msg: "Output: {{ item.output }}"
+    loop: "{{ compareconfig.results }}"
+    loop_control:
+      label: "{{ item.item.device }}"  
+
+  - name: Check-Sync
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{ {{item.device}} }/check-sync
+    loop: "{{ ptu.list }}"
+    loop_control:
+      label: "{{ item.device }}"
+    register: checksync
+
+  - name: Check-Sync Results
+    debug:
+      msg: "Sync-Status: {{ item.output.result }}"
+    loop: "{{ checksync.results }}"
+    loop_control:
+      label: "{{ item.item.device }}"
+

@@ -1,0 +1,8 @@
+[nso-entel]
+172.16.1.125 ansible_user="admin" ansible_password="admin" ansible_ssh_password="admin" url="http://172.16.1.125:8080/jsonrpc"
+
+[nso-55]
+172.16.1.122 ansible_user="admin" ansible_password="admin" ansible_ssh_password="admin" url="http://172.16.1.125:8080/jsonrpc"
+
+[xr-1]
+172.16.1.16 ansible_connection=network_cli ansible_network_os=iosxr ansible_user='cisco' ansible_password="cisco"

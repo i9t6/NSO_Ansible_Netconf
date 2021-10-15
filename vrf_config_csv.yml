@@ -1,0 +1,76 @@
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+ 
+  tasks:
+  - name: Service variables in CSV file
+    read_csv:
+      path: vrf_vars.csv
+      #key: vrf_name
+    register: vrf
+    delegate_to: localhost
+
+  - name: VRF Configuration
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          vrf:vrf:
+            - name: "{{ item.vrf_name }}"
+              devices:
+              - device: "{{ item.device }}"
+                primary_route_target: "{{ item.rt_primary }}"
+                RT_export:
+                - "{{ item.rt_import }}"
+                RT_import:
+                - "{{ item.rt_export }}"
+    loop: "{{ vrf.list }}"
+    loop_control:
+      label: "{{ item.device }}"   
+  # - name: print
+  #   debug:
+  #     msg: "{{ item.device }}"
+  #   loop: "{{ vrf.list }}"
+
+
+  - name: VRF Route MAP Configuration
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          vrf:vrf:
+            - name: "{{ item.vrf_name }}"
+              devices:
+              - device: "{{ item.device }}"
+                iosxe:
+                  route_map_export: "{{ item.rm_export }}"
+                  route_map_import: "{{ item.rm_import }}"   
+    loop: "{{ vrf.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+    when: "item.tipo  == 'iosxe'"
+
+  - name: VRF Route MAP Configuration
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          vrf:vrf:
+            - name: "{{ item.vrf_name }}"
+              devices:
+              - device: "{{ item.device }}"
+                iosxr:
+                  route_map_export: "{{ item.rm_export }}"
+                  route_map_import: "{{ item.rm_import }}"    
+    loop: "{{ vrf.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+    when: "item.tipo  == 'iosxr'"

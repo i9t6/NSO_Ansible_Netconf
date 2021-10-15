@@ -1,0 +1,4 @@
+---
+- import_playbook: l3vpn_client_delete_csv.yml
+- import_playbook: vrf_delete_csv.yml
+- import_playbook: ptu_delete_csv.yml

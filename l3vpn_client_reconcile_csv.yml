@@ -1,0 +1,123 @@
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+ 
+  tasks:
+  - name: Service variables in CSV file
+    read_csv:
+      path: l3vpn_client_reconcile_vars.csv
+    register: l3vpn
+    delegate_to: localhost
+
+  - name: L3VPN Reconcile, XE
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      commit_flags: [no-networking]
+      data:
+        tailf-ncs:services:
+          l3vpn:l3vpn_client:
+          - client: "{{ item.client }}"
+            client_id: "{{ item.client_id }}"
+            site: "{{ item.site }}"
+            vpn_attachments:
+            - circuit_id: "{{ item.circuit_id }}"
+              device: "{{ item.device }}"
+              interface:
+                WAN_mask: "{{ item.mask }}"
+                WAN_prefix: "{{ item.prefix }}"
+                iosxe:
+                  GigabitEthernet:
+                    ifnumber: "{{ item.ifnumber }}"
+                  dot1q_tag: "{{ item.tag }}" 
+                proxy_arp:
+                - null
+              iosxe:
+                policy_map: "{{ item.policy_map }}" 
+                vrf: "{{ item.vrf }}" 
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"     
+    when: " item.tipo == 'iosxe'"
+
+  - name: L3VPN Reconcile, XR
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      commit_flags: [no-networking]
+      data:
+        tailf-ncs:services:
+          l3vpn:l3vpn_client:
+          - client: "{{ item.client }}"
+            client_id: "{{ item.client_id }}"
+            site: "{{ item.site }}"
+            vpn_attachments:
+            - circuit_id: "{{ item.circuit_id }}"
+              device: "{{ item.device }}"
+              interface:
+                WAN_mask: "{{ item.mask }}"
+                WAN_prefix: "{{ item.prefix }}"
+                iosxr:
+                  GigabitEthernet:
+                    ifnumber: "{{ item.ifnumber }}"
+                  dot1q_tag: "{{ item.tag }}"
+                proxy_arp:
+                - null
+              iosxr:
+                policy_map: "{{ item.policy_map }}" 
+                vrf: "{{ item.vrf }}" 
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"     
+    when: " item.tipo == 'iosxr'"
+
+  - name: Reconcile
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:services/l3vpn:l3vpn_client{ {{item.client}} {{item.client_id}} {{item.site}} }/re-deploy
+      input: { "reconcile" : { } }
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}" 
+
+  - name: Compare-Config
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{ {{item.device}} }/compare-config
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"  
+    register: compareconfig
+
+  - name: Compare-Config Results
+    debug:
+      msg: "Output: {{ item.output }}"
+    loop: "{{ compareconfig.results }}"
+    loop_control:
+      label: "{{ item.item.device }}"  
+
+  - name: Check-Sync
+    nso_action:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      path: /ncs:devices/device{ {{item.device}} }/check-sync
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"
+    register: checksync
+
+  - name: Check-Sync Results
+    debug:
+      msg: "Sync-Status: {{ item.output.result }}"
+    loop: "{{ checksync.results }}"
+    loop_control:
+      label: "{{ item.item.device }}"

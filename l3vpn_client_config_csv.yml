@@ -1,0 +1,105 @@
+- name: Configure device
+  hosts: nso-entel
+  connection: local
+  gather_facts: no
+  #no_log: true
+ 
+  tasks:
+  - name: Service variables in CSV file
+    read_csv:
+      path: l3vpn_client_vars.csv
+    register: l3vpn
+    delegate_to: localhost
+
+  - name: VRF Configuration, XE - GigabitEthernet
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          l3vpn:l3vpn_client:
+          - client: "{{ item.client }}"
+            client_id: "{{ item.client_id }}"
+            site: "{{ item.site }}"
+            vpn_attachments:
+            - circuit_id: "{{ item.circuit_id }}"
+              device: "{{ item.device }}"
+              interface:
+                WAN_mask: "{{ item.mask }}"
+                WAN_prefix: "{{ item.prefix }}"
+                iosxe:
+                  GigabitEthernet:
+                    ifnumber: "{{ item.ifnumber }}"
+                  dot1q_tag: "{{ item.tag }}" 
+                proxy_arp:
+                - null
+              iosxe:
+                policy_map: "{{ item.policy_map }}" 
+                vrf: "{{ item.vrf }}" 
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+    when: " item.tipo == 'iosxe'"
+
+  - name: VRF Configuration, XR - GigabitEthernet
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          l3vpn:l3vpn_client:
+          - client: "{{ item.client }}"
+            client_id: "{{ item.client_id }}"
+            site: "{{ item.site }}"
+            vpn_attachments:
+            - circuit_id: "{{ item.circuit_id }}"
+              device: "{{ item.device }}"
+              interface:
+                WAN_mask: "{{ item.mask }}"
+                WAN_prefix: "{{ item.prefix }}"
+                iosxr:
+                  GigabitEthernet:
+                    ifnumber: "{{ item.ifnumber }}"
+                  dot1q_tag: "{{ item.tag }}" 
+                proxy_arp:
+                - null
+              iosxr:
+                policy_map: "{{ item.policy_map }}" 
+                vrf: "{{ item.vrf }}" 
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+    when: " item.tipo == 'iosxr' and item.interface_type == 'GigabitEthernet'"
+
+  - name: VRF Configuration, XR - BundleEthernet
+    nso_config:
+      url: "{{ url }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      data:
+        tailf-ncs:services:
+          l3vpn:l3vpn_client:
+          - client: "{{ item.client }}"
+            client_id: "{{ item.client_id }}"
+            site: "{{ item.site }}"
+            vpn_attachments:
+            - circuit_id: "{{ item.circuit_id }}"
+              device: "{{ item.device }}"
+              interface:
+                WAN_mask: "{{ item.mask }}"
+                WAN_prefix: "{{ item.prefix }}"
+                iosxr:
+                  BundleEthernet:
+                    ifnumber: "{{ item.ifnumber }}"
+                  dot1q_tag: "{{ item.tag }}" 
+                proxy_arp:
+                - null
+              iosxr:
+                policy_map: "{{ item.policy_map }}" 
+                vrf: "{{ item.vrf }}" 
+    loop: "{{ l3vpn.list }}"
+    loop_control:
+      label: "{{ item.device }}"       
+    when: " item.tipo == 'iosxr' and item.interface_type == 'Bundle'"

@@ -1,0 +1,21 @@
+policy_name;cir;units;cir_xe;units_xe;devices
+#
+# --- No duplicated polic_name ---
+#
+# Notas crear solo politica, o solo asignar equipos
+10Mbps;10;mbps;10000;bps;['XRv-1','xr0','c0']
+#10Mbps;;;;;['XRv-1','xr0','c0']
+#
+# Crear politica y asignar
+20Mbps;20;mbps;2000;bps;['XRv-1','xr0','c0','xr1','c1']
+#
+# Politica por modelo
+30Mbps;30;mbps;;;['xr0','XRv-1']
+#30Mbps;;;30000;bps;['c0','c1']
+#
+# Reconciliar
+40Mbps;40;mbps;4000;bps;['xr0','xr1','xr2','c0','c1','c2']
+#40Mbps;;;;;['xr0','xr1','xr2','c0','c1']
+# modificar
+50Mbps;50;mbps;50000;bps;['xr0','XRv-1']
+#50Mbps;55;gbps;55000;pps;
