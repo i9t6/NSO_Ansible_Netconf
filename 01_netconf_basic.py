@@ -1,4 +1,4 @@
-#!/home/cisco/py3/bin/python
+#!/usr/bin/python
 from ncclient import manager
 from ncclient.xml_ import to_ele
 import xmltodict
@@ -7,8 +7,19 @@ import csv
 import re
 import sys
 import requests
+import logging
+from datetime import datetime
 
-nso_srv = {'host':'172.16.1.125','port':'2022','username':'admin','password':'admin','hostkey_verify':False}
+date = datetime.now().date().strftime('%Y-%d-%m')
+console_formartter = logging.Formatter('%(asctime)s:module:%(module)s>> %(message)s')
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(console_formartter)
+my_logger = logging.getLogger()
+my_logger.addHandler(console_handler)
+
+#nso_srv = {'host':'172.16.1.125','port':'2022','username':'admin','password':'admin','hostkey_verify':False}
+nso_srv = {'host':'172.16.1.122','port':'2022','username':'admin','password':'admin','hostkey_verify':False}
 
 def read_csv(var_csv_file, var_key):
     data = {}
@@ -86,6 +97,8 @@ def config_netconf(var_dic_templates,):
     with manager.connect(**nso_srv) as m:
         for key, case in var_dic_templates.items():
             try:
+                
+                # merge also usefull for reconcile, similar to no-network
                 netconf_reply = m.edit_config(case, target="running", default_operation='merge')        
             except:
                 print(f"Error {key}, Posible servicio o equipo no existente")
@@ -100,17 +113,20 @@ def reconcile(var_dic_reconcile):
     headers = {'Accept': 'application/yang-data+json','Content-Type': 'application/yang-data+json','Authorization': 'Basic YWRtaW46YWRtaW4='}
     
     for key, info in var_dic_reconcile.items():
-        url = f"http://172.16.1.125:8080/restconf/data/tailf-ncs:services/Srv_Policy_Map:Srv_Policy_Map={key}/re-deploy"
+        url = f"http://{nso_srv['host']}:8080/restconf/data/tailf-ncs:services/Srv_Policy_Map:Srv_Policy_Map={key}/re-deploy"
         response = requests.request("POST", url, headers=headers, data=payload)
         print(f"Re-deploy/Reconcile {key}: {response}   (204 es ok)")
         for device in info['devices']:
             for i in ['compare-config','check-sync']:
-                url = f"http://172.16.1.125:8080/restconf/data/tailf-ncs:devices/device={device}/{i}"
+                url = f"http://{nso_srv['host']}:8080/restconf/data/tailf-ncs:devices/device={device}/{i}"
                 response = requests.request("POST", url, headers=headers)
-                if response.json() == {}:
-                    print(f"\t{i} {device}: Sin cambios")
-                else:
-                    print(f"\t{i} {device}: {response.json()['tailf-ncs:output']}")
+                try:
+                    if response.json() == {}:
+                        print(f"\t{i} {device}: Sin cambios")
+                    else:
+                        print(f"\t{i} {device}: {response.json()['tailf-ncs:output']}")
+                except:
+                    print(f'Error {i}')
     return '\nReconcile complete\n'
 
 
@@ -119,36 +135,46 @@ if __name__ == '__main__':
         option = sys.argv[1]
     except:
         option = 'c'
+    
     try:
         verbose = sys.argv[2]
     except:
         verbose = ''
+
+    # ERROR < WARNING < INFO
+    if 'vv' in verbose:    
+        vb = 'INFO'
+    elif 'v' in verbose:
+        vb='WARNING'
+    else:
+        vb ='ERROR'
+    my_logger.setLevel(eval(f"logging.{vb}"))
+
+    # Configure
     if 'c' in option :
         data = read_csv('srv_policy.csv','policy_name')
-        if 'v' in verbose:
-            print(data,"\n-----------------------")
+        my_logger.warning(f"{data}\n-----------------------")
         data_fixed = fix_device_list('Srv_Policy_Map','policy_name', data, 'config')
-        if 'v' in verbose:
-            print(data_fixed,"\n-----------------------")
+        my_logger.warning(f"{data_fixed}\n-----------------------")
         dic_templates = fill_template_qos('config_qos.xml', data_fixed, verbose) 
         print(config_netconf(dic_templates),"\n-----------------------")
+    
+    # Delete
     elif 'd' in option:
         data_delete = read_csv('srv_policy_delete.csv','policy_name')
-        if 'v' in verbose:
-            print(data_delete,"\n-----------------------")
+        my_logger.warning(f"{data_delete}\n-----------------------")
         data_fixed_delete = fix_device_list('Srv_Policy_Map','policy_name', data_delete,'delete')
-        if 'v' in verbose:
-            print(data_fixed_delete,"\n-----------------------")
+        my_logger.warning(f"{data_fixed_delete}\n-----------------------")
         dic_templates_delete = fill_template_qos('config_qos_delete.xml', data_fixed_delete, verbose)
         print(config_netconf(dic_templates_delete),"\n-----------------------")
+    
+    # Reconcile
     elif 'r' in option:
         # Se puede hacer en 2 pasos, configurar y despues reconcile
         data_reconcile = read_csv('srv_policy_reconcile.csv','policy_name')
-        if 'v' in verbose:
-            print(data_reconcile,"\n-----------------------")
+        my_logger.warning(f"{data_reconcile}\n-----------------------")
         data_fixed = fix_device_list('Srv_Policy_Map','policy_name', data_reconcile, 'config')
-        if 'v' in verbose:
-            print(data_fixed,"\n-----------------------")
+        my_logger.warning(f"{data_fixed}\n-----------------------")
         dic_templates = fill_template_qos('config_qos.xml', data_fixed, verbose) 
         print(config_netconf(dic_templates),"\n-----------------------")
         print(reconcile(data_reconcile))

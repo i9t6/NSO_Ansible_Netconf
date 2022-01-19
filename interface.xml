@@ -1,0 +1,63 @@
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <get-config>
+    <source>
+      <running/>
+    </source>
+    <filter>
+      <interface-configurations xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-ifmgr-cfg"\>
+        <interface-configuration>
+          <interface-name>GigabitEthernet0/0/0/0</interface-name>
+        </interface-configuration>
+      </interface-configurations>
+    </filter>
+  </get-config>
+</rpc>
+
+
+<get-config>
+  <source>
+    <running/>
+  </source>
+  <filter>
+    <interface-configurations xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-ifmgr-cfg">
+      <interface-configuration>
+        <interface-name>GigabitEthernet0/0/0/0</interface-name>
+      </interface-configuration>
+    </interface-configurations>
+  </filter>
+</get-config>
+
+<get-config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <source>
+    <running/>
+  </source>
+  <filter>
+    <interface-configurations xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-ifmgr-cfg">
+      <interface-configuration>
+        <interface-name>GigabitEthernet0/0/0/0</interface-name>
+      </interface-configuration>
+    </interface-configurations>
+  </filter>
+</get-config>
+
+<get xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <filter>
+    <rib xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-ip-rib-ipv4-oper">
+      <vrfs>
+        <vrf>
+          <vrf-name>default</vrf-name>
+          <afs>
+            <af>
+              <af-name>IPv4</af-name>
+              <safs>
+                <saf>
+                  <saf-name>Unicast</saf-name>
+                </saf>
+              </safs>
+            </af>
+          </afs>
+        </vrf>
+      </vrfs>
+    </rib>
+  </filter>
+</get>
