@@ -1,0 +1,52 @@
+- name: Query
+  hosts: localhost
+  connection: local
+  gather_facts: no
+ 
+  tasks:
+  - name: Load variables
+    include_vars:
+      file: nso.yaml
+      name: nso
+
+  - name: Query devices including operational data
+    nso_query:
+      url: "{{ nso.url }}"
+      username: "{{ nso.username }}"
+      password: "{{ nso.password }}"
+      xpath: /ncs:devices/device
+      fields:
+      - name
+      - device-type
+
+  - name: Query Packages
+    nso_query:
+      url: "{{ nso.url }}"
+      username: "{{ nso.username }}"
+      password: "{{ nso.password }}"
+      xpath: /ncs:packages/package
+      fields:
+      - name
+      - description
+
+  - name: Query Service 
+    nso_query:
+      url: "{{ nso.url }}"
+      username: "{{ nso.username }}"
+      password: "{{ nso.password }}"
+      xpath: /snmpTemp5:snmpTemp5[comm-str='test1']
+      fields:
+      - device-list
+
+
+  - name: Query device
+    nso_query:
+      url: "{{ nso.url }}"
+      username: "{{ nso.username }}"
+      password: "{{ nso.password }}"
+      xpath: /ncs:devices/device[name='c0']
+      fields:
+      - name
+      - service-list
+
+      

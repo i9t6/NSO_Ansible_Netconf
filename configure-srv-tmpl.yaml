@@ -1,0 +1,45 @@
+- name: Configure device
+  hosts: nso
+  connection: local
+  gather_facts: no
+ 
+  tasks:
+  - name: NSO global variables
+    include_vars:
+      file: nso.yaml
+      name: nso
+
+  - name: Service variables
+    include_vars:
+      file: vrf_vars.yml
+      name: vrf_vars
+
+  - name: Device configuration
+    nso_config:
+      url: "{{ nso.url }}"
+      username: "{{ nso.username }}"
+      password: "{{ nso.password }}"
+      data:
+        tailf-ncs:services:
+          vrf:vrf:
+          - device-list:
+            - "{{ vrf_vars.router }}"
+            devices:
+            - RT_export:
+              - "{{ vrf_vars.rt_import }}"
+              RT_import:
+              - "{{ vrf_vars.rt_export }}"
+              device: "{{ vrf_vars.router }}"
+              iosxe:
+                route_map_export: "{{ vrf_vars.rm_export }}"
+                route_map_import: "{{ vrf_vars.rm_import }}"
+              primary_route_target: "{{ vrf_vars.rt_primary }}"
+            directly-modified:
+              devices:
+              - "{{ vrf_vars.router }}"
+            modified:
+              devices:
+              - "{{ vrf_vars.router }}"
+            name: "{{ vrf_vars.vrf_name }}"
+
+
