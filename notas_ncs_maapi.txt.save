@@ -1,0 +1,14 @@
+the way we use it is using low level api,
+
+for no-networking it's
+
+trans.apply(True, _ncs.maapi.COMMIT_NCS_NO_NETWORKING)
+
+for no-out-of-sync
+
+trans.apply(True, _ncs.maapi.COMMIT_NCS_NO_OUT_OF_SYNC_CHECK)
+
+
+
+more commands are listed in pyapi folder in the file gen_add_maapi_const.c
+
