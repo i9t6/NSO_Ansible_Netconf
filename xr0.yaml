@@ -1,0 +1,266 @@
+tailf-ncs:device:
+- active-settings:
+    commit-queue:
+      enabled-by-default: false
+    connect-retries:
+      attempts: 0
+      timeout: 3
+    connect-timeout: 20
+    lsa:
+      no-overwrite:
+        enabled-by-default: false
+    ned-keep-alive:
+      count: 3
+    ned-settings:
+      use-junos-rollback: false
+    no-overwrite:
+      enabled-by-default: false
+    out-of-sync-commit-behaviour: reject
+    read-timeout: 20
+    session-limits:
+      max-sessions: unlimited
+    session-pool:
+      idle-time: 30
+    ssh-keep-alive:
+      count: 3
+      interval: 20
+    trace: 'false'
+    trace-output: file
+    write-timeout: 20
+  address: 127.0.0.1
+  authgroup: default
+  capability:
+  - module: tailf-ned-cisco-ios-xr
+    revision: '2021-02-04'
+    uri: http://tail-f.com/ned/cisco-ios-xr
+  - module: tailf-ned-cisco-ios-xr-stats
+    revision: '2021-02-04'
+    uri: http://tail-f.com/ned/cisco-ios-xr-stats
+  - uri: http://tail-f.com/ns/ncs-ned/cli-allow-abbrev-keys
+  - uri: http://tail-f.com/ns/ncs-ned/show-partial?path-format=cmd-path-modes-only
+  - uri: http://tail-f.com/ns/ncs-ned/show-stats-path
+  - uri: urn:ietf:params:netconf:capability:with-defaults:1.0?basic-mode=trim
+  - module: ietf-interfaces
+    revision: '2014-05-08'
+    uri: urn:ietf:params:xml:ns:yang:ietf-interfaces
+  - module: ietf-ip
+    revision: '2014-06-16'
+    uri: urn:ietf:params:xml:ns:yang:ietf-ip
+  commit-queue:
+    queue-length: 0
+  config:
+    ietf-yang-library:modules-state:
+      module:
+      - conformance-type: implement
+        feature:
+        - arbitrary-names
+        - if-mib
+        - pre-provisioning
+        name: ietf-interfaces
+        namespace: urn:ietf:params:xml:ns:yang:ietf-interfaces
+        revision: '2014-05-08'
+      - conformance-type: implement
+        feature:
+        - ipv4-non-contiguous-netmasks
+        - ipv6-privacy-autoconf
+        name: ietf-ip
+        namespace: urn:ietf:params:xml:ns:yang:ietf-ip
+        revision: '2014-06-16'
+      - conformance-type: implement
+        name: tailf-ned-cisco-ios-xr
+        namespace: http://tail-f.com/ned/cisco-ios-xr
+        revision: '2021-02-04'
+      - conformance-type: import
+        name: tailf-ned-cisco-ios-xr-id
+        namespace: http://tail-f.com/ned/cisco-ios-xr-id
+        revision: ''
+      - conformance-type: implement
+        name: tailf-ned-cisco-ios-xr-stats
+        namespace: http://tail-f.com/ned/cisco-ios-xr-stats
+        revision: ''
+      module-set-id: 3ed2bbc7d899208fd839ff08dd33a39b
+    ietf-yang-library:yang-library:
+      content-id: 3ed2bbc7d899208fd839ff08dd33a39b
+      datastore:
+      - name: ietf-datastores:running
+        schema: common
+      - name: ietf-datastores:intended
+        schema: common
+      - name: ietf-datastores:operational
+        schema: common
+      module-set:
+      - import-only-module:
+        - name: tailf-ned-cisco-ios-xr-id
+          namespace: http://tail-f.com/ned/cisco-ios-xr-id
+          revision: ''
+        module:
+        - feature:
+          - arbitrary-names
+          - if-mib
+          - pre-provisioning
+          name: ietf-interfaces
+          namespace: urn:ietf:params:xml:ns:yang:ietf-interfaces
+          revision: '2014-05-08'
+        - feature:
+          - ipv4-non-contiguous-netmasks
+          - ipv6-privacy-autoconf
+          name: ietf-ip
+          namespace: urn:ietf:params:xml:ns:yang:ietf-ip
+          revision: '2014-06-16'
+        - name: tailf-ned-cisco-ios-xr
+          namespace: http://tail-f.com/ned/cisco-ios-xr
+          revision: '2021-02-04'
+        - name: tailf-ned-cisco-ios-xr-stats
+          namespace: http://tail-f.com/ned/cisco-ios-xr-stats
+        name: common
+      schema:
+      - module-set:
+        - common
+        name: common
+    tailf-ned-cisco-ios-xr:route-policy:
+    - name: PASS
+      value: "pass\r"
+    tailf-ned-cisco-ios-xr:router:
+      bgp:
+        bgp-no-instance:
+        - address-family:
+            ipv4:
+              unicast: {}
+          bgp:
+            router-id: 10.0.0.2
+          id: 65002
+          neighbor:
+          - address-family:
+              ipv4:
+                unicast:
+                  route-policy:
+                  - direction: in
+                    name: PASS
+                  - direction: out
+                    name: PASS
+            id: 10.0.0.1
+            password:
+              enc-type: clear
+              password: password
+            remote-as: 65001
+            update-source:
+              GigabitEthernet: 0/0/0/0
+  device-type:
+    cli:
+      ned-id: cisco-iosxr-cli-7.33:cisco-iosxr-cli-7.33
+  live-status:
+    ietf-yang-library:modules-state:
+      module:
+      - conformance-type: implement
+        feature:
+        - arbitrary-names
+        - if-mib
+        - pre-provisioning
+        name: ietf-interfaces
+        namespace: urn:ietf:params:xml:ns:yang:ietf-interfaces
+        revision: '2014-05-08'
+      - conformance-type: implement
+        feature:
+        - ipv4-non-contiguous-netmasks
+        - ipv6-privacy-autoconf
+        name: ietf-ip
+        namespace: urn:ietf:params:xml:ns:yang:ietf-ip
+        revision: '2014-06-16'
+      - conformance-type: implement
+        name: tailf-ned-cisco-ios-xr
+        namespace: http://tail-f.com/ned/cisco-ios-xr
+        revision: '2021-02-04'
+      - conformance-type: import
+        name: tailf-ned-cisco-ios-xr-id
+        namespace: http://tail-f.com/ned/cisco-ios-xr-id
+        revision: ''
+      - conformance-type: implement
+        name: tailf-ned-cisco-ios-xr-stats
+        namespace: http://tail-f.com/ned/cisco-ios-xr-stats
+        revision: ''
+      module-set-id: 3ed2bbc7d899208fd839ff08dd33a39b
+    ietf-yang-library:yang-library:
+      content-id: 3ed2bbc7d899208fd839ff08dd33a39b
+      datastore:
+      - name: ietf-datastores:running
+        schema: common
+      - name: ietf-datastores:intended
+        schema: common
+      - name: ietf-datastores:operational
+        schema: common
+      module-set:
+      - import-only-module:
+        - name: tailf-ned-cisco-ios-xr-id
+          namespace: http://tail-f.com/ned/cisco-ios-xr-id
+          revision: ''
+        module:
+        - feature:
+          - arbitrary-names
+          - if-mib
+          - pre-provisioning
+          name: ietf-interfaces
+          namespace: urn:ietf:params:xml:ns:yang:ietf-interfaces
+          revision: '2014-05-08'
+        - feature:
+          - ipv4-non-contiguous-netmasks
+          - ipv6-privacy-autoconf
+          name: ietf-ip
+          namespace: urn:ietf:params:xml:ns:yang:ietf-ip
+          revision: '2014-06-16'
+        - name: tailf-ned-cisco-ios-xr
+          namespace: http://tail-f.com/ned/cisco-ios-xr
+          revision: '2021-02-04'
+        - name: tailf-ned-cisco-ios-xr-stats
+          namespace: http://tail-f.com/ned/cisco-ios-xr-stats
+        name: common
+      schema:
+      - module-set:
+        - common
+        name: common
+  module:
+  - name: ietf-interfaces
+    revision: '2014-05-08'
+  - name: ietf-ip
+    revision: '2014-06-16'
+  - name: tailf-ned-cisco-ios-xr
+    revision: '2021-02-04'
+  - name: tailf-ned-cisco-ios-xr-stats
+    revision: '2021-02-04'
+  name: xr0
+  platform:
+    model: NETSIM
+    name: ios-xr
+    serial-number: xr0
+    version: cisco-iosxr-7.33
+  port: 10024
+  service-list:
+  - /BGPlab:BGPlab{Bgp-test}
+  ssh:
+    host-key:
+    - algorithm: ssh-rsa
+      key-data: 'AAAAB3NzaC1yc2EAAAADAQABAAABgQC04kc2HyvwxSIkMW0KKmAD+AHmucBiihTjbWZlUeIy
+
+        KsySbq/myQDX+mAXW91Cq4gtUK9ZIUotRdYB/tm6JdJgklQnSpVNAIqQgJHd14e3NBDxvaVG
+
+        zllDsdmeWo8jY/tkMn7HMvktwWZNxvQUR/EZ0ld64ODdcijHbytXbDpXE56X9sFNOTsBCKCU
+
+        laEK9cStD9mqb2Y4i3/Mi+apHEo1Z5ZznpUSSEWX33tCsUscjlN1iK4/fpVFTIk1DwYTzS6Z
+
+        ffvaYBH0TLN+MBCjEdEBokbDiHdiu0RAiOMVRsSlMRW0Nx2wy32l2y6LYWh0IEkauOFe0lc4
+
+        2ezDzwuLBmKCT6OpHt2oQND/Hwaje5HMj3et07x2jdlI/4Dn1hFszLUYpLl23iBt78iQGWXG
+
+        9AwWCaF3q3IpIH31Kk+H/pVwBjouAUG4s3m0Ahe6udTKE22JESgta5RuTAqLKWQvH1+v5RkW
+
+        yeQ0iICchW7iK3lG7xXXYnGjZKSLlvJ54uEj+UE='
+  state:
+    admin-state: unlocked
+    last-transaction-id: 39ebb1ad2f946981175db20027838828
+    oper-state: unknown
+    transaction-mode: ned
+  tailf-ncs-alarms:alarm-summary:
+    criticals: 0
+    indeterminates: 0
+    majors: 0
+    minors: 0
+    warnings: 0

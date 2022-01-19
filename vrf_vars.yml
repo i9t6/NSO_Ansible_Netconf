@@ -1,0 +1,8 @@
+---
+router: c0
+vrf_name: vrf_xe_2
+rt_primary: 100:110
+rt_export: 100:111
+rt_import: 100:112
+rm_export: temp-map
+rm_import: temp-map

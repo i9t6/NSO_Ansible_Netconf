@@ -1,0 +1,11 @@
+vrf_name,router,rt_primary,rt_export,rt_import,tipo,rm_export,rm_import
+vrf_100,c0,100:200,100:300,100:400,iosxe,temp-map,temp-map
+vrf_100,c1,100:201,100:301,100:401,,,
+vrf_102,c0,100:202,100:302,100:402,iosxe,temp-map,temp-map
+vrf_103,c0,100:203,100:303,100:403,iosxe,temp-map,temp-map
+vrf_104,c0,100:204,100:304,100:404,iosxe,temp-map,temp-map
+vrf_105,xr0,100:205,100:305,100:405,iosxr,temp-map,temp-map
+vrf_106,xr0,100:206,100:306,100:406,,temp-map,temp-map
+vrf_107,xr0,100:207,,,iosxr,temp-map,temp-map
+vrf_108,xr0,100:208,100:308,100:408,iosxr,temp-map,temp-map
+vrf_100,xr0,100:209,100:309,100:409,iosxr,temp-map,temp-map

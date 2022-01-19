@@ -1,0 +1,12 @@
+- name: spaui ios
+  hosts: xe
+  connection: local
+  gather_facts: no
+
+
+  tasks:
+
+  - name: run show version and check to see if output contains IOS
+    cisco.ios.ios_command:
+      commands: show version
+      wait_for: result[0] contains IOS

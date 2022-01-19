@@ -1,0 +1,327 @@
+tailf-ncs:device:
+- active-settings:
+    commit-queue:
+      enabled-by-default: false
+    connect-retries:
+      attempts: 0
+      timeout: 3
+    connect-timeout: 20
+    lsa:
+      no-overwrite:
+        enabled-by-default: false
+    ned-keep-alive:
+      count: 3
+    ned-settings:
+      use-junos-rollback: false
+    no-overwrite:
+      enabled-by-default: false
+    out-of-sync-commit-behaviour: reject
+    read-timeout: 20
+    session-limits:
+      max-sessions: unlimited
+    session-pool:
+      idle-time: 30
+    ssh-keep-alive:
+      count: 3
+      interval: 20
+    trace: 'false'
+    trace-output: file
+    write-timeout: 20
+  address: 127.0.0.1
+  authgroup: default
+  capability:
+  - uri: http://tail-f.com/ns/ncs-ned/cli-allow-abbrev-keys
+  - uri: http://tail-f.com/ns/ncs-ned/show-partial?path-format=key-path
+  - uri: http://tail-f.com/ns/ncs-ned/show-stats-path
+  - uri: urn:ietf:params:netconf:capability:with-defaults:1.0?basic-mode=trim
+  - module: ietf-interfaces
+    revision: '2014-05-08'
+    uri: urn:ietf:params:xml:ns:yang:ietf-interfaces
+  - module: ietf-ip
+    revision: '2014-06-16'
+    uri: urn:ietf:params:xml:ns:yang:ietf-ip
+  - module: tailf-ned-cisco-ios
+    revision: '2021-02-05'
+    uri: urn:ios
+  - module: tailf-ned-cisco-ios-stats
+    revision: '2021-02-05'
+    uri: urn:ios-stats
+  commit-queue:
+    queue-length: 0
+  config:
+    ietf-yang-library:modules-state:
+      module:
+      - conformance-type: implement
+        feature:
+        - arbitrary-names
+        - if-mib
+        - pre-provisioning
+        name: ietf-interfaces
+        namespace: urn:ietf:params:xml:ns:yang:ietf-interfaces
+        revision: '2014-05-08'
+      - conformance-type: implement
+        feature:
+        - ipv4-non-contiguous-netmasks
+        - ipv6-privacy-autoconf
+        name: ietf-ip
+        namespace: urn:ietf:params:xml:ns:yang:ietf-ip
+        revision: '2014-06-16'
+      - conformance-type: implement
+        name: tailf-ned-cisco-ios
+        namespace: urn:ios
+        revision: '2021-02-05'
+      - conformance-type: import
+        name: tailf-ned-cisco-ios-id
+        namespace: urn:ios-id
+        revision: ''
+      - conformance-type: implement
+        name: tailf-ned-cisco-ios-stats
+        namespace: urn:ios-stats
+        revision: ''
+      module-set-id: 339855c6ed5680b48ecc48bfcc28da91
+    ietf-yang-library:yang-library:
+      content-id: 339855c6ed5680b48ecc48bfcc28da91
+      datastore:
+      - name: ietf-datastores:running
+        schema: common
+      - name: ietf-datastores:intended
+        schema: common
+      - name: ietf-datastores:operational
+        schema: common
+      module-set:
+      - import-only-module:
+        - name: tailf-ned-cisco-ios-id
+          namespace: urn:ios-id
+          revision: ''
+        module:
+        - feature:
+          - arbitrary-names
+          - if-mib
+          - pre-provisioning
+          name: ietf-interfaces
+          namespace: urn:ietf:params:xml:ns:yang:ietf-interfaces
+          revision: '2014-05-08'
+        - feature:
+          - ipv4-non-contiguous-netmasks
+          - ipv6-privacy-autoconf
+          name: ietf-ip
+          namespace: urn:ietf:params:xml:ns:yang:ietf-ip
+          revision: '2014-06-16'
+        - name: tailf-ned-cisco-ios
+          namespace: urn:ios
+          revision: '2021-02-05'
+        - name: tailf-ned-cisco-ios-stats
+          namespace: urn:ios-stats
+        name: common
+      schema:
+      - module-set:
+        - common
+        name: common
+    tailf-ned-cisco-ios:aaa:
+      accounting:
+        delay-start: {}
+    tailf-ned-cisco-ios:interface:
+      Ethernet:
+      - ip:
+          no-address:
+            address: false
+        name: 0/0/0
+      FastEthernet:
+      - ip:
+          no-address:
+            address: false
+        name: '0'
+      - ip:
+          no-address:
+            address: false
+        name: 0/0
+      - ip:
+          no-address:
+            address: false
+        name: 1/0
+      - ip:
+          no-address:
+            address: false
+        name: 1/1
+      GigabitEthernet:
+      - ip:
+          no-address:
+            address: false
+        name: '0'
+      - ip:
+          no-address:
+            address: false
+        name: 0/0
+      - ip:
+          no-address:
+            address: false
+        name: 0/1
+      Loopback:
+      - ip:
+          address:
+            primary:
+              address: 127.0.0.1
+              mask: 255.0.0.0
+        name: '0'
+    tailf-ned-cisco-ios:ip:
+      finger: {}
+      gratuitous-arps-conf:
+        gratuitous-arps: false
+      http:
+        secure-server: false
+        server: false
+      source-route: true
+    tailf-ned-cisco-ios:radius:
+      server:
+      - address:
+          ipv4:
+            acct-port: 1813
+            auth-port: 1812
+            host: 1.1.1.1
+        id: one
+    tailf-ned-cisco-ios:router:
+      bgp:
+      - as-no: 65001
+        auto-summary: false
+        bgp:
+          router-id: 10.0.0.1
+        neighbor:
+        - id: 10.0.0.2
+          password:
+            text: password
+          remote-as: '65002'
+          update-source:
+            GigabitEthernet: '2'
+    tailf-ned-cisco-ios:snmp-server:
+      community:
+      - RO:
+        - null
+        name: python-demotest-7
+      - RW:
+        - null
+        name: test-8
+    tailf-ned-cisco-ios:tailfned:
+      police: cirmode
+  description: Wowowo
+  device-type:
+    cli:
+      ned-id: cisco-ios-cli-6.69:cisco-ios-cli-6.69
+  live-status:
+    ietf-yang-library:modules-state:
+      module:
+      - conformance-type: implement
+        feature:
+        - arbitrary-names
+        - if-mib
+        - pre-provisioning
+        name: ietf-interfaces
+        namespace: urn:ietf:params:xml:ns:yang:ietf-interfaces
+        revision: '2014-05-08'
+      - conformance-type: implement
+        feature:
+        - ipv4-non-contiguous-netmasks
+        - ipv6-privacy-autoconf
+        name: ietf-ip
+        namespace: urn:ietf:params:xml:ns:yang:ietf-ip
+        revision: '2014-06-16'
+      - conformance-type: implement
+        name: tailf-ned-cisco-ios
+        namespace: urn:ios
+        revision: '2021-02-05'
+      - conformance-type: import
+        name: tailf-ned-cisco-ios-id
+        namespace: urn:ios-id
+        revision: ''
+      - conformance-type: implement
+        name: tailf-ned-cisco-ios-stats
+        namespace: urn:ios-stats
+        revision: ''
+      module-set-id: 339855c6ed5680b48ecc48bfcc28da91
+    ietf-yang-library:yang-library:
+      content-id: 339855c6ed5680b48ecc48bfcc28da91
+      datastore:
+      - name: ietf-datastores:running
+        schema: common
+      - name: ietf-datastores:intended
+        schema: common
+      - name: ietf-datastores:operational
+        schema: common
+      module-set:
+      - import-only-module:
+        - name: tailf-ned-cisco-ios-id
+          namespace: urn:ios-id
+          revision: ''
+        module:
+        - feature:
+          - arbitrary-names
+          - if-mib
+          - pre-provisioning
+          name: ietf-interfaces
+          namespace: urn:ietf:params:xml:ns:yang:ietf-interfaces
+          revision: '2014-05-08'
+        - feature:
+          - ipv4-non-contiguous-netmasks
+          - ipv6-privacy-autoconf
+          name: ietf-ip
+          namespace: urn:ietf:params:xml:ns:yang:ietf-ip
+          revision: '2014-06-16'
+        - name: tailf-ned-cisco-ios
+          namespace: urn:ios
+          revision: '2021-02-05'
+        - name: tailf-ned-cisco-ios-stats
+          namespace: urn:ios-stats
+        name: common
+      schema:
+      - module-set:
+        - common
+        name: common
+  module:
+  - name: ietf-interfaces
+    revision: '2014-05-08'
+  - name: ietf-ip
+    revision: '2014-06-16'
+  - name: tailf-ned-cisco-ios
+    revision: '2021-02-05'
+  - name: tailf-ned-cisco-ios-stats
+    revision: '2021-02-05'
+  name: c0
+  platform:
+    model: NETSIM
+    name: ios
+    serial-number: c0
+    version: cisco-ios-6.69
+  port: 10022
+  service-list:
+  - /BGPlab:BGPlab{Bgp-test}
+  - /snmpPyTemp5:snmpPyTemp5{test-7}
+  - /snmpTemp5:snmpTemp5{test-8}
+  - /ncs:services/radius_service:radius_service{AMER}
+  ssh:
+    host-key:
+    - algorithm: ssh-rsa
+      key-data: 'AAAAB3NzaC1yc2EAAAADAQABAAABgQC04kc2HyvwxSIkMW0KKmAD+AHmucBiihTjbWZlUeIy
+
+        KsySbq/myQDX+mAXW91Cq4gtUK9ZIUotRdYB/tm6JdJgklQnSpVNAIqQgJHd14e3NBDxvaVG
+
+        zllDsdmeWo8jY/tkMn7HMvktwWZNxvQUR/EZ0ld64ODdcijHbytXbDpXE56X9sFNOTsBCKCU
+
+        laEK9cStD9mqb2Y4i3/Mi+apHEo1Z5ZznpUSSEWX33tCsUscjlN1iK4/fpVFTIk1DwYTzS6Z
+
+        ffvaYBH0TLN+MBCjEdEBokbDiHdiu0RAiOMVRsSlMRW0Nx2wy32l2y6LYWh0IEkauOFe0lc4
+
+        2ezDzwuLBmKCT6OpHt2oQND/Hwaje5HMj3et07x2jdlI/4Dn1hFszLUYpLl23iBt78iQGWXG
+
+        9AwWCaF3q3IpIH31Kk+H/pVwBjouAUG4s3m0Ahe6udTKE22JESgta5RuTAqLKWQvH1+v5RkW
+
+        yeQ0iICchW7iK3lG7xXXYnGjZKSLlvJ54uEj+UE='
+  state:
+    admin-state: unlocked
+    last-transaction-id: 592762521f786a87e08dde29e549134f
+    oper-state: enabled
+    transaction-mode: ned
+  tailf-ncs-alarms:alarm-summary:
+    criticals: 0
+    indeterminates: 0
+    majors: 0
+    minors: 0
+    warnings: 0

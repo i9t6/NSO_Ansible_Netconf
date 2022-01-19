@@ -1,0 +1,318 @@
+- name: Verify device configuration
+  hosts: localhost
+  connection: local
+  gather_facts: no
+ 
+  tasks:
+  - name: NSO global variables
+    include_vars:
+      file: nso.yaml
+      name: nso
+
+  - name: Verify configuration data
+    nso_verify:
+      url: "{{ nso.url }}"
+      username: "{{ nso.username }}"
+      password: "{{ nso.password }}"
+      data:
+        tailf-ncs:devices:
+          device:
+          - name: "{{ device }}"
+            config:
+              tailf-ned-cisco-ios:call-home:
+                contact-email-addr: sch-smart-licensing@cisco.com
+                profile:
+                - active: true
+                  destination:
+                    transport-method:
+                      http:
+                      - null
+                  name: CiscoTAC-1
+                  reporting:
+                    smart-licensing-data: true
+              tailf-ned-cisco-ios:control-plane: {}
+              tailf-ned-cisco-ios:crypto:
+                pki:
+                  certificate:
+                    chain:
+                    - certificate:
+                      - cert: "  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101\
+                          \ 0B050030 \r\n  32310E30 0C060355 040A1305 43697363 6F312030 1E060355\
+                          \ 04031317 43697363 \r\n  6F204C69 63656E73 696E6720 526F6F74 20434130\
+                          \ 1E170D31 33303533 30313934 \r\n  3834375A 170D3338 30353330 31393438\
+                          \ 34375A30 32310E30 0C060355 040A1305 \r\n  43697363 6F312030 1E060355\
+                          \ 04031317 43697363 6F204C69 63656E73 696E6720 \r\n  526F6F74 20434130\
+                          \ 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 \r\n  82010A02\
+                          \ 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D \r\
+                          \n  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388\
+                          \ 8A38E520 \r\n  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3\
+                          \ 700A8BF7 D8F256EE \r\n  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957\
+                          \ A2617DE7 104FDC5F EA2956AC \r\n  7390A3EB 2B5436AD C847A2C5 DAB553EB\
+                          \ 69A9A535 58E9F3E3 C0BD23CF 58BD7188 \r\n  68E69491 20F320E7 948E71D7\
+                          \ AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 \r\n  C7479096 B4CB2D62\
+                          \ EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 \r\n  C55F0D76\
+                          \ 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 \r\
+                          \n  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04\
+                          \ 04030201 \r\n  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D\
+                          \ 0E041604 1449DC85 \r\n  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06\
+                          \ 092A8648 86F70D01 010B0500 \r\n  03820101 00507F24 D3932A66 86025D9F\
+                          \ E838AE5C 6D4DF6B0 49631C78 240DA905 \r\n  604EDCDE FF4FED2B 77FC460E\
+                          \ CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B \r\n  D98987BF E40CBD9E\
+                          \ 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 \r\n  467A3DF4\
+                          \ 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C \r\
+                          \n  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49\
+                          \ 1765308B \r\n  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229\
+                          \ C37C1E69 39F08678 \r\n  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC\
+                          \ 60E4616A B623CDBD 230E3AFB \r\n  418616A9 4093E049 4D10AB75 27E86F73\
+                          \ 932E35B5 8862FDAE 0275156F 719BB2F0 \r\n  D697DF7F 28\r\n"
+                        cert-type: ca
+                        serial: '01'
+                      name: SLA-TrustPoint
+                    - certificate:
+                      - cert: "  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101\
+                          \ 05050030 \r\n  31312F30 2D060355 04031326 494F532D 53656C66 2D536967\
+                          \ 6E65642D 43657274 \r\n  69666963 6174652D 32323538 34333230 3530301E\
+                          \ 170D3231 30323139 30303235 \r\n  35385A17 0D333130 32313930 30323535\
+                          \ 385A3031 312F302D 06035504 03132649 \r\n  4F532D53 656C662D 5369676E\
+                          \ 65642D43 65727469 66696361 74652D32 32353834 \r\n  33323035 30308201\
+                          \ 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 \r\n  0A028201\
+                          \ 01009880 5EE1258B 2802C282 46A18C81 58C1C6F8 812CF6CA 8B956E3F \r\
+                          \n  8FFE6BCA B39CA722 46CA42F4 864B105F 5B116A61 CC8203C0 F89C1F56\
+                          \ F06A9DA1 \r\n  D4CCEF62 9EC39F91 F90EA6D0 46F3A226 A25A0946 64967598\
+                          \ FFFB33BC 9CD9F8E8 \r\n  4DC2ADC9 E6AA6464 DB3F5E50 DB6FF546 46F4C347\
+                          \ DD8FEE6D 13023039 4CA1FDC4 \r\n  A5F370E0 4DDF961D 65D5B834 A1591334\
+                          \ 2073D28D 728629F1 04385E27 5F6202CC \r\n  679DD807 6473E4D7 8841EB0F\
+                          \ A0DA6F9A 871727F9 E2E0707B BE10911F 81DB83A2 \r\n  88BA1BD5 F0972B2F\
+                          \ BCB412C5 BDA8324D 8AD84695 B3AC99CF 3CE6ECC3 A36255E0 \r\n  2776EB27\
+                          \ BC51E141 32AE7279 E1E456D5 A95733D9 D8EE1F94 DAF0C445 964CB456 \r\
+                          \n  6D9B30EF 530F0203 010001A3 53305130 0F060355 1D130101 FF040530\
+                          \ 030101FF \r\n  301F0603 551D2304 18301680 14A86DAA DC492127 FD4CBA67\
+                          \ D435343B 3501F029 \r\n  97301D06 03551D0E 04160414 A86DAADC 492127FD\
+                          \ 4CBA67D4 35343B35 01F02997 \r\n  300D0609 2A864886 F70D0101 05050003\
+                          \ 82010100 53B4DF4B 5B66488B 7D2D100D \r\n  072533D0 10EC3ECB 0A6DBC9C\
+                          \ 98401F56 2EDF71AC DADA4FF3 D7F4AB61 9BD73564 \r\n  39F13759 7B5C50BB\
+                          \ 86356C7C BD1CC831 B1167D9F 50626628 6B6A9330 BAB5F29F \r\n  6FBA7867\
+                          \ AB215AD5 796877C3 0F6AED6C 4AFCCFE9 D92B7704 B0DD3ADB 4666035D \r\
+                          \n  BE7B97AE B591C5BF 8EFDBABE AFAB3E37 A387C555 6DBEBC81 31418C8C\
+                          \ D8C466EE \r\n  ECB213AB FB8FBFC0 B8605111 D5A0C0CE 58DD38AC 6741E527\
+                          \ 0F734355 F3E4E88C \r\n  4DF474BE A0A5C648 1DD012F2 5A54C160 1F227390\
+                          \ F5E05351 0113F069 C37D6CC7 \r\n  F3E04E69 61A99732 D3236308 E3FFDAAF\
+                          \ B4955756 E668247F 21CA2592 3DA0F6B3 \r\n  E74C55FB 2B230B26 E50FB97E\
+                          \ 188B6F7F 19CBB71C\r\n"
+                        cert-type: self-signed
+                        serial: '01'
+                      name: TP-self-signed-2258432050
+                  trustpoint:
+                  - enrollment:
+                      pkcs12:
+                      - null
+                    id: SLA-TrustPoint
+                    revocation-check:
+                    - crl
+                  - enrollment:
+                      selfsigned:
+                      - null
+                    id: TP-self-signed-2258432050
+                    revocation-check:
+                    - none
+                    rsakeypair:
+                      key-label: TP-self-signed-2258432050
+                    subject-name: cn=IOS-Self-Signed-Certificate-2258432050
+              tailf-ned-cisco-ios:diagnostic:
+                bootup:
+                  level: minimal
+              tailf-ned-cisco-ios:enable:
+                password:
+                  secret: cisco
+              tailf-ned-cisco-ios:hostname: csr-1
+              tailf-ned-cisco-ios:interface:
+                GigabitEthernet:
+                - ip:
+                    address:
+                      primary:
+                        address: 172.16.1.11
+                        mask: 255.255.255.0
+                  mop:
+                    sysid: false
+                    xenabled: false
+                  name: '1'
+                  negotiation:
+                    auto: true
+                - ip:
+                    address:
+                      primary:
+                        address: 172.16.2.11
+                        mask: 255.255.255.0
+                  mop:
+                    sysid: false
+                    xenabled: false
+                  name: '2'
+                  negotiation:
+                    auto: true
+                - ip:
+                    no-address:
+                      address: false
+                  mop:
+                    sysid: false
+                    xenabled: false
+                  name: '3'
+                  negotiation:
+                    auto: true
+                  shutdown:
+                  - null
+                Loopback:
+                - ip:
+                    address:
+                      primary:
+                        address: 1.1.1.11
+                        mask: 255.255.255.255
+                  name: '0'
+                - ip:
+                    address:
+                      primary:
+                        address: 100.0.0.1
+                        mask: 255.255.255.255
+                  name: '100'
+              tailf-ned-cisco-ios:ip:
+                domain:
+                  name: domain.test
+                forward-protocol:
+                  nd:
+                  - null
+                http:
+                  authentication:
+                    local:
+                    - null
+                  secure-server: true
+                  server: true
+                ssh:
+                  version: 2
+              tailf-ned-cisco-ios:license:
+                boot:
+                - line: level ax
+              tailf-ned-cisco-ios:line:
+                console:
+                - first: '0'
+                  stopbits: '1'
+                vty:
+                - first: 2
+                  last: 4
+                  login:
+                    local:
+                    - null
+                  transport:
+                    input:
+                    - all
+                vty-single-conf:
+                  vty:
+                  - first: 0
+                    login:
+                      local:
+                      - null
+                    transport:
+                      input:
+                      - all
+                  - first: 1
+                    length: 0
+                    login:
+                      local:
+                      - null
+                    transport:
+                      input:
+                      - all
+              tailf-ned-cisco-ios:logging:
+                buffered:
+                  severity-level: debugging
+                console:
+                  severity-level: debugging
+                monitor:
+                  severity-level: debugging
+              tailf-ned-cisco-ios:login:
+                on-success:
+                  log:
+                  - null
+              tailf-ned-cisco-ios:memory:
+                free:
+                  low-watermark:
+                    processor: 71507
+              tailf-ned-cisco-ios:multilink:
+                bundle-name: authenticated
+              tailf-ned-cisco-ios:netconf:
+                ssh: {}
+              tailf-ned-cisco-ios:netconf-yang:
+                feature:
+                  candidate-datastore:
+                  - null
+              tailf-ned-cisco-ios:netconf-yang-enable:
+                netconf-yang:
+                - null
+              tailf-ned-cisco-ios:platform:
+                console: virtual
+                punt-keepalive:
+                  disable-kernel-core: true
+                qfp:
+                  utilization:
+                    monitor:
+                      load: 80
+              tailf-ned-cisco-ios:redundancy: {}
+              tailf-ned-cisco-ios:router:
+                bgp:
+                - as-no: 65001
+                  bgp:
+                    log-neighbor-changes: true
+                    router-id: 172.16.2.11
+                  neighbor:
+                  - id: 172.16.2.16
+                    password:
+                      text: password
+                    remote-as: '65002'
+                    update-source:
+                      GigabitEthernet: '2'
+                  redistribute:
+                    connected: {}
+                isis-container:
+                  isis:
+                  - area-tag: '1'
+                    metric-style:
+                      wide: {}
+                    net:
+                    - tag: 49.0001.0000.0000.0001.00
+                    segment-routing:
+                      mpls:
+                      - null
+              tailf-ned-cisco-ios:segment-routing:
+                mpls:
+                  global-block:
+                    end: 24000
+                    start: 16000
+              tailf-ned-cisco-ios:service:
+                call-home:
+                - null
+                timestamps:
+                  debug:
+                    datetime:
+                      msec:
+                      - null
+                  log:
+                    datetime:
+                      msec:
+                      - null
+              tailf-ned-cisco-ios:snmp-server:
+                community:
+                - RW:
+                  - null
+                  name: snmp_comm_1
+              tailf-ned-cisco-ios:spanning-tree:
+                extend:
+                  system-id:
+                  - null
+              tailf-ned-cisco-ios:subscriber:
+                templating: true
+              tailf-ned-cisco-ios:tailfned:
+                police: cirmode
+              tailf-ned-cisco-ios:username:
+              - name: cisco
+                password:
+                  secret: cisco
+                  type: '0'
+              tailf-ned-cisco-ios:version: '17.3'
